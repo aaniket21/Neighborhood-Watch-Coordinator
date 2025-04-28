@@ -28,15 +28,15 @@ if(isset($_POST['user_id']) && isset($_POST['role'])) {
 }
 
 // Get all crime reports
+// Get all crime reports
 $crime_reports = [];
-$sql = "SELECT cr.*, u.username 
-        FROM crime_reports cr 
-        JOIN users u ON cr.user_id = u.id 
-        ORDER BY cr.created_at DESC";
+$sql = "SELECT cr.*, u.username FROM crime_reports cr JOIN users u ON cr.user_id = u.id ORDER BY cr.created_at DESC";
 if($result = mysqli_query($conn, $sql)){
     while($row = mysqli_fetch_assoc($result)){
         $crime_reports[] = $row;
     }
+} else {
+    $crime_reports = null;
 }
 
 // Get all users
@@ -46,36 +46,44 @@ if($result = mysqli_query($conn, $sql)){
     while($row = mysqli_fetch_assoc($result)){
         $users[] = $row;
     }
+} else {
+    $users = null;
 }
 
 // Get stats for admin dashboard
 $stats = [
-    'total_reports' => count($crime_reports),
+    'total_reports' => is_array($crime_reports) ? count($crime_reports) : 'N/A',
     'verified_reports' => 0,
     'pending_reports' => 0,
     'rejected_reports' => 0,
-    'total_users' => count($users),
+    'total_users' => is_array($users) ? count($users) : 'N/A',
     'admin_users' => 0
 ];
 
 // Calculate report stats
-foreach($crime_reports as $report) {
-    if($report['status'] === 'verified') {
-        $stats['verified_reports']++;
-    } elseif($report['status'] === 'pending') {
-        $stats['pending_reports']++;
-    } elseif($report['status'] === 'rejected') {
-        $stats['rejected_reports']++;
+if (is_array($crime_reports)) {
+    foreach($crime_reports as $report) {
+        if($report['status'] === 'verified') {
+            $stats['verified_reports']++;
+        } elseif($report['status'] === 'pending') {
+            $stats['pending_reports']++;
+        } elseif($report['status'] === 'rejected') {
+            $stats['rejected_reports']++;
+        }
     }
 }
 
 // Calculate user stats
-foreach($users as $user) {
-    if($user['role'] === 'admin') {
-        $stats['admin_users']++;
+if (is_array($users)) {
+    foreach($users as $user) {
+        if($user['role'] === 'admin') {
+            $stats['admin_users']++;
+        }
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -785,7 +793,9 @@ foreach($users as $user) {
                                 <div class="stat-icon-container primary">
                                     <i class="fas fa-file-alt"></i>
                                 </div>
-                                <h3 class="stat-value" data-count="<?php echo $stats['total_reports']; ?>">0</h3>
+                                <h3 class="stat-value" data-count="<?php echo is_numeric($stats['total_reports']) ? $stats['total_reports'] : 0; ?>">
+    <?php echo is_numeric($stats['total_reports']) ? $stats['total_reports'] : 'N/A'; ?>
+</h3>
                                 <p class="stat-label">Total Reports</p>
                             </div>
                         </div>
@@ -796,7 +806,9 @@ foreach($users as $user) {
                                 <div class="stat-icon-container success">
                                     <i class="fas fa-check-circle"></i>
                                 </div>
-                                <h3 class="stat-value" data-count="<?php echo $stats['verified_reports']; ?>">0</h3>
+                                <h3 class="stat-value" data-count="<?php echo is_numeric($stats['verified_reports']) ? $stats['verified_reports'] : 0; ?>">
+    <?php echo is_numeric($stats['verified_reports']) ? $stats['verified_reports'] : 'N/A'; ?>
+</h3>
                                 <p class="stat-label">Verified Reports</p>
                             </div>
                         </div>
@@ -807,7 +819,9 @@ foreach($users as $user) {
                                 <div class="stat-icon-container warning">
                                     <i class="fas fa-clock"></i>
                                 </div>
-                                <h3 class="stat-value" data-count="<?php echo $stats['pending_reports']; ?>">0</h3>
+                                <h3 class="stat-value" data-count="<?php echo is_numeric($stats['pending_reports']) ? $stats['pending_reports'] : 0; ?>">
+    <?php echo is_numeric($stats['pending_reports']) ? $stats['pending_reports'] : 'N/A'; ?>
+</h3>
                                 <p class="stat-label">Pending Reports</p>
                             </div>
                         </div>
@@ -818,7 +832,9 @@ foreach($users as $user) {
                                 <div class="stat-icon-container info">
                                     <i class="fas fa-users"></i>
                                 </div>
-                                <h3 class="stat-value" data-count="<?php echo $stats['total_users']; ?>">0</h3>
+                                <h3 class="stat-value" data-count="<?php echo is_numeric($stats['total_users']) ? $stats['total_users'] : 0; ?>">
+    <?php echo is_numeric($stats['total_users']) ? $stats['total_users'] : 'N/A'; ?>
+</h3>
                                 <p class="stat-label">Total Users</p>
                             </div>
                         </div>
@@ -1029,8 +1045,18 @@ foreach($users as $user) {
                 card.style.animationDelay = `${0.1 + (index * 0.05)}s`;
             });
             
-            // Animate stat counters
-            animateCounters();
+            // Animate stat counters only if data is available
+            const counters = document.querySelectorAll('.stat-value[data-count]');
+            let hasValidCounter = false;
+            counters.forEach(counter => {
+                const val = counter.getAttribute('data-count');
+                if (!isNaN(parseInt(val)) && parseInt(val) > 0) {
+                    hasValidCounter = true;
+                }
+            });
+            if (hasValidCounter) {
+                animateCounters();
+            }
             
             // Function to animate counters
             function animateCounters() {

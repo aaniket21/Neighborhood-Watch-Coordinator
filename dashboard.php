@@ -23,27 +23,14 @@ if($stmt = mysqli_prepare($conn, $sql)){
 
 // Get nearby crime reports
 $nearby_reports = [];
-if(isset($_GET['lat']) && isset($_GET['lng'])){
-    $lat = $_GET['lat'];
-    $lng = $_GET['lng'];
-    $radius = 10; // 10km radius
-    
-    $sql = "SELECT cr.*, u.username 
-            FROM crime_reports cr 
-            JOIN users u ON cr.user_id = u.id 
-            WHERE (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) <= ? 
-            AND cr.status = 'verified'
-            ORDER BY cr.created_at DESC";
-            
-    if($stmt = mysqli_prepare($conn, $sql)){
-        mysqli_stmt_bind_param($stmt, "dddd", $lat, $lng, $lat, $radius);
-        if(mysqli_stmt_execute($stmt)){
-            $result = mysqli_stmt_get_result($stmt);
-            while($row = mysqli_fetch_assoc($result)){
-                $nearby_reports[] = $row;
-            }
-        }
-        mysqli_stmt_close($stmt);
+$sql = "SELECT cr.*, u.username 
+        FROM crime_reports cr 
+        JOIN users u ON cr.user_id = u.id 
+        WHERE cr.status = 'verified'
+        ORDER BY cr.created_at DESC";
+if($result = mysqli_query($conn, $sql)){
+    while($row = mysqli_fetch_assoc($result)){
+        $nearby_reports[] = $row;
     }
 }
 
@@ -1720,18 +1707,18 @@ if($stmt = mysqli_prepare($conn, $sql)){
                                 <h6><i class="fas fa-car"></i>Vehicle Safety</h6>
                                 <p>Never leave valuables in plain sight. Always lock your car doors and park in well-lit areas when possible.</p>
                             </div>
-                            <div class="text-center mt-3">
+                            <!-- <div class="text-center mt-3">
                                 <button class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-plus me-1"></i> More Tips
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     
                     <!-- Local News -->
                     <div class="card animate__animated animate__fadeIn">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5><i class="fas fa-newspaper"></i>Local News</h5>
+                            <h5><i class="fas fa-newspaper"></i> News</h5>
                             <button id="refresh-news-btn" class="btn btn-sm btn-outline-primary">
                                 <span id="refresh-icon"><i class="fas fa-sync-alt"></i></span> Refresh
                             </button>
@@ -1749,7 +1736,7 @@ if($stmt = mysqli_prepare($conn, $sql)){
                     </div>
                     
                     <!-- Quick Actions -->
-                    <div class="card animate__animated animate__fadeIn">
+                    <!-- <div class="card animate__animated animate__fadeIn">
                         <div class="card-header">
                             <h5><i class="fas fa-bolt"></i>Quick Actions</h5>
                         </div>
@@ -1781,7 +1768,7 @@ if($stmt = mysqli_prepare($conn, $sql)){
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

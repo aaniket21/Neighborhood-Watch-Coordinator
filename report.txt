@@ -1,0 +1,146 @@
+# Project Report: Neighborhood Watch Coordinator
+
+## 1. Introduction
+Neighborhood Watch Coordinator is a modern PHP-based web application designed to empower local communities in reporting crimes, sharing safety alerts, and collaborating on neighborhood security. The platform provides a user-friendly interface for residents and administrators to interact, report incidents, and access real-time information.
+
+---
+
+## 2. Project Objectives
+- Facilitate easy and secure crime reporting for community members.
+- Enable administrators to verify, manage, and analyze crime data.
+- Offer a dashboard with real-time statistics and interactive maps.
+- Integrate an AI-powered chatbot for instant assistance and queries.
+- Ensure a responsive and visually appealing user experience.
+
+---
+
+## 3. Functional Overview
+### 3.1 User Registration & Authentication
+- Users can register with a unique username, email, and password.
+- Passwords are securely hashed before storage.
+- Login system verifies credentials and manages sessions.
+- Role-based access: regular users and admins.
+
+### 3.2 Dashboard
+- Personalized dashboard after login.
+- Displays user’s own reports, recent incidents, and statistics.
+- Shows a map with nearby verified crime reports (using Leaflet.js).
+
+### 3.3 Crime Reporting
+- Users can submit new crime reports with title, description, address, type, and geolocation.
+- Input validation ensures completeness and correctness.
+- Reports are initially marked as 'pending' for admin verification.
+
+### 3.4 Admin Panel
+- Admins can view, verify, or reject crime reports.
+- Manage user roles and monitor user activity.
+- Access to advanced statistics and analytics.
+- Admins can send news and notifications to users.
+
+### 3.5 Notifications & News
+- Users receive important alerts and news from admins.
+- Notification system for timely updates.
+
+### 3.6 AI Chatbot Integration
+- Floating chatbot widget available on all pages.
+- Powered by Google Gemini API.
+- Users can ask questions about safety, reporting, or platform usage.
+- Chatbot responds instantly and guides users as a virtual assistant.
+
+---
+
+## 4. Technologies & Libraries Used
+- **Backend:** PHP 7+ (procedural style)
+- **Frontend:** HTML5, CSS3, Bootstrap 5, Animate.css, FontAwesome
+- **Database:** MySQL (auto-setup by config.php)
+- **Mapping:** Leaflet.js (OpenStreetMap)
+- **AI Integration:** Gemini API (Google Generative Language)
+- **Session & Security:** PHP sessions, password hashing, input validation
+
+---
+
+## 5. Database Structure
+- **Database:** `neighborhood_watch`
+- **Tables:**
+  - `users`: Stores user info (id, username, password, email, role, created_at)
+  - `crime_reports`: Stores reports (id, user_id, title, description, latitude, longitude, address, crime_type, status, created_at)
+- **Auto-setup:** On first run, config.php creates the database, tables, and inserts a default admin user.
+
+---
+
+## 6. User Roles & Permissions
+- **Regular Users:**
+  - Register, log in, and manage their own profile.
+  - Submit and view their own crime reports.
+  - View verified crime reports on the dashboard map.
+  - Receive notifications and news.
+  - Interact with the AI chatbot.
+- **Admins:**
+  - All user permissions.
+  - Access to admin panel for managing users and reports.
+  - Verify, reject, or delete crime reports.
+  - Promote/demote user roles.
+  - Send community-wide notifications and news.
+
+---
+
+## 7. Security Measures
+- Passwords are hashed using PHP's `password_hash`.
+- Sessions are used for authentication and role management.
+- Input validation on all forms to prevent SQL injection and XSS.
+- Default admin credentials should be changed after first login.
+- API keys (e.g., Gemini) should not be exposed in public repositories.
+
+---
+
+## 8. AI Chatbot Integration
+- The chatbot is available on every page as a floating widget.
+- User messages are sent to `chatbot_api.php`, which relays them to the Google Gemini API.
+- The chatbot provides instant support on crime reporting, safety, and platform usage.
+- All responses are context-aware and tailored for community safety.
+
+---
+
+## 9. Setup & Deployment
+1. **Copy the project to your web server root (e.g., `c:/xampp/htdocs/chatbot/`).**
+2. **Start Apache and MySQL (XAMPP recommended).**
+3. **Visit [http://localhost/chatbot/](http://localhost/chatbot/) in your browser.**
+4. **On first run, the database and tables are auto-created.**
+5. **Default admin credentials:**
+   - Username: `admin`
+   - Password: `admin123`
+6. **Update the Gemini API key in `chatbot_api.php` for chatbot functionality.**
+
+---
+
+## 10. Usage Scenarios
+- **Residents:** Report crimes, check local alerts, and get safety advice.
+- **Admins:** Moderate reports, manage users, and broadcast news.
+- **Community:** Stay informed about neighborhood safety in real time.
+
+---
+
+## 11. UI/UX Design
+- Responsive design using Bootstrap for desktop and mobile.
+- Modern color palette and animations for engagement.
+- Intuitive navigation and clear call-to-action buttons.
+- Floating chatbot for easy access to help.
+
+---
+
+## 12. Recommendations & Future Improvements
+- Add support for file uploads (photos/evidence in reports).
+- Implement multi-language support.
+- Integrate SMS/email notifications.
+- Add analytics dashboard for deeper insights.
+- Enable location-based push notifications.
+
+---
+
+## 13. Conclusion
+Neighborhood Watch Coordinator is a robust, extensible platform for empowering local communities to collaborate on safety and crime prevention. It combines modern web technologies, real-time data, and AI assistance to create a safer, more connected neighborhood.
+
+---
+
+**Prepared by:** [Your Name]
+**Date:** 2025-04-28
